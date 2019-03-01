@@ -89,7 +89,7 @@
     "systemjs-plugin-css": "0.1.33",
     "systemjs-plugin-json": "0.2.2",
     "systemjs-plugin-text": "0.0.8",
-    "through2": "^2.0.1",
+    "through2": "^3.0.1",
     "typescript": "^2.0.3",
     "underscore": "1.9.0",
     "vinyl-named": "^1.1.0",

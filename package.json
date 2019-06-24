@@ -33,7 +33,7 @@
     "turndown": "^5.0.1"
   },
   "devDependencies": {
-    "@types/jquery": "^2.0.34",
+    "@types/jquery": "^3.3.30",
     "angular": "^1.6.10",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",

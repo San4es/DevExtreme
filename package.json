@@ -78,7 +78,7 @@
     "lazypipe": "^1.0.1",
     "less": "^2.7.1",
     "less-plugin-autoprefix": "^2.0.0",
-    "lint-staged": "^8.1.5",
+    "lint-staged": "^9.0.0",
     "merge-stream": "^1.0.0",
     "mustache": "2.3.0",
     "pre-commit": "^1.2.2",

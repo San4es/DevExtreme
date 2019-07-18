@@ -55,7 +55,7 @@
     "gulp-file": "^0.3.0",
     "gulp-footer": "^1.0.5",
     "gulp-header": "^1.7.1",
-    "gulp-if": "^2.0.0",
+    "gulp-if": "^3.0.0",
     "gulp-jsbeautifier": "^2.0.3",
     "gulp-ll": "^1.0.4",
     "gulp-notify": "^2.2.0",

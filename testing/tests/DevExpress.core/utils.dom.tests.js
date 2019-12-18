@@ -31,7 +31,11 @@ QUnit.test('createMarkupFromString', function(assert) {
         assert.equal($resultElement.length, 1);
         assert.equal($resultElement.text(), 'test');
     } finally {
-        window.WinJS = originalWinJS;
+        if(originalWinJS) {
+            window.WinJS = originalWinJS;
+        } else {
+            delete window.WinJS;
+        }
     }
 });
 

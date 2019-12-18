@@ -379,7 +379,11 @@ QUnit.test('isSimulator return true when is ripple emulator', function(assert) {
         window.tinyHippos = true;
         assert.ok(devices.isSimulator(), 'ripple emulator detected as simulator');
     } finally {
-        window.tinyHippos = ripple;
+        if(ripple) {
+            window.tinyHippos = ripple;
+        } else {
+            delete window.tinyHippos;
+        }
     }
 });
 

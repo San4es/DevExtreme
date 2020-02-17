@@ -2176,5 +2176,42 @@ module('selection', {
             assert.ok(isOK, 'selectedItemKeys === null handled correctly');
             assert.deepEqual(selectedItemKeys, [2], 'after selection \'selectedItemKeys\' container correct item key');
         });
+
+        // TODO: reanimate
+        test(`dataSource loading calls once after opening when selectedItem is specified with the ${selectionMode} selection mode`, function(assert) {
+            let loadingFired = 0;
+
+            this.createWidget({
+                selectionMode,
+                selectedItem: 1,
+                dataSource: {
+                    load: function() {
+                        loadingFired++;
+                    },
+                    byKey: function(key) {
+                        return key;
+                    }
+                }
+            });
+
+            assert.equal(loadingFired, 1, 'loading called once');
+        });
+
+        test(`TODO rename: with the ${selectionMode} selection mode`, function(assert) {
+            const instance = this.createWidget({
+                items: [{
+                    key: 'Group1',
+                    items: [
+                        1, 2
+                    ]
+                }],
+                grouped: true,
+                selectionMode,
+                selectedItemKeys: [ 1 ]
+            });
+            const $selectedItems = instance.$element().find('.dx-item-selected');
+
+            assert.equal($selectedItems.length, 1);
+        });
     });
 });

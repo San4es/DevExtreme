@@ -797,8 +797,10 @@ const Lookup = DropDownList.inherit({
         });
     },
 
-    _getSelectionChangedHandler: function() {
-        return this.option('showSelectionControls') ? this._selectionChangeHandler.bind(this) : commonUtils.noop;
+    _selectionChangeHandler: function(e) {
+        if(this.option('showSelectionControls')) {
+            this.callBase(e);
+        }
     },
 
     _listContentReadyHandler: function() {

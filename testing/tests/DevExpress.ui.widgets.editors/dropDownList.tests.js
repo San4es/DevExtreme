@@ -810,6 +810,27 @@ QUnit.module('items & dataSource', moduleConfig, () => {
 
         assert.equal(spy.callCount, 0, 'byKey is not called when items are loaded');
     });
+
+    // TODO: reanimate (see lookup test w/ such name) OR remove it (see collection widgets tests)
+    QUnit.test('dataSource loading calls once after opening when value is specified', function(assert) {
+        let loadingFired = 0;
+
+        const instance = $('#dropDownList').dxDropDownList({
+            value: 1,
+            dataSource: {
+                load: function() {
+                    loadingFired++;
+                },
+                byKey: function(key) {
+                    return key;
+                }
+            }
+        }).dxDropDownList('instance');
+
+        instance.open();
+
+        assert.equal(loadingFired, 1, 'loading called once');
+    });
 });
 
 QUnit.module('selectedItem', moduleConfig, () => {
@@ -1032,6 +1053,55 @@ QUnit.module('selectedItem', moduleConfig, () => {
         dropDownList.option('dataSource', [{ id: 0, name: 'zero' }, { id: 1, name: 'one' }]);
 
         assert.strictEqual(selectionChangedHandler.callCount, 0, 'selectionChanged action was not fired');
+    });
+
+    QUnit.test('List has initial value with items', function(assert) {
+        const dropDownList = $('#dropDownList').dxDropDownList({
+            items: [1, 2, 3],
+            value: 2,
+            opened: true
+        }).dxDropDownList('instance');
+
+        const listSelectedItem = dropDownList._list.option('selectedItem');
+
+        assert.strictEqual(listSelectedItem, 2, 'List has the correct selected item');
+    });
+
+    QUnit.test('List has initial value with dataSource', function(assert) {
+        const dropDownList = $('#dropDownList').dxDropDownList({
+            dataSource: {
+                store: [1, 2, 3]
+            },
+            value: 2,
+            opened: true
+        }).dxDropDownList('instance');
+
+        const listSelectedItem = dropDownList._list.option('selectedItem');
+
+        assert.strictEqual(listSelectedItem, 2, 'List has the correct selected item');
+    });
+
+    QUnit.test('List selectedItem change should update value', function(assert) {
+        const dropDownList = $('#dropDownList').dxDropDownList({
+            items: [1, 2, 3],
+            opened: true
+        }).dxDropDownList('instance');
+
+        dropDownList._list.selectItem(1);
+
+        assert.strictEqual(dropDownList.option('value'), 2);
+    });
+
+    QUnit.test('Click on the List item should update value', function(assert) {
+        const dropDownList = $('#dropDownList').dxDropDownList({
+            items: [1, 2, 3],
+            opened: true
+        }).dxDropDownList('instance');
+
+        const itemElements = dropDownList._list.itemElements();
+        $(itemElements).eq(1).click();
+
+        assert.strictEqual(dropDownList.option('value'), 2);
     });
 });
 
@@ -1419,7 +1489,16 @@ QUnit.module('aria accessibility', moduleConfig, () => {
 
 QUnit.module('dropdownlist with groups', {
     beforeEach: function() {
-        this.dataSource = new DataSource({
+
+        this.getGroupedItems = () => [{
+            key: 'first',
+            items: [{ id: 1 }]
+        }, {
+            key: 'second',
+            items: [{ id: 2 }]
+        }];
+
+        this.getGroupedDataSource = () => new DataSource({
             store: [{ id: 1, group: 'first' }, { id: 2, group: 'second' }],
             key: 'id',
             group: 'group'
@@ -1428,7 +1507,7 @@ QUnit.module('dropdownlist with groups', {
 }, () => {
     QUnit.test('grouped option', function(assert) {
         const dropDownList = $('#dropDownList').dxDropDownList({
-            dataSource: this.dataSource,
+            dataSource: this.getGroupedDataSource(),
             opened: true,
             grouped: true
         }).dxDropDownList('instance');
@@ -1446,7 +1525,7 @@ QUnit.module('dropdownlist with groups', {
         const groupTemplate1 = new Template('<div>Test</div>');
 
         const dropDownList = $('#dropDownList').dxDropDownList({
-            dataSource: this.dataSource,
+            dataSource: this.getGroupedDataSource(),
             opened: true,
             grouped: true,
             groupTemplate: groupTemplate1
@@ -1463,7 +1542,7 @@ QUnit.module('dropdownlist with groups', {
 
     QUnit.test('itemElement argument of groupTemplate option is correct', function(assert) {
         $('#dropDownList').dxDropDownList({
-            dataSource: this.dataSource,
+            dataSource: this.getGroupedDataSource(),
             opened: true,
             grouped: true,
             groupTemplate(itemData, itemIndex, itemElement) {
@@ -1475,7 +1554,7 @@ QUnit.module('dropdownlist with groups', {
 
     QUnit.test('selectedItem for grouped dropdownlist', function(assert) {
         const dropDownList = $('#dropDownList').dxDropDownList({
-            dataSource: this.dataSource,
+            dataSource: this.getGroupedDataSource(),
             opened: true,
             grouped: true,
             valueExpr: 'id',
@@ -1484,6 +1563,37 @@ QUnit.module('dropdownlist with groups', {
         }).dxDropDownList('instance');
 
         assert.strictEqual(dropDownList.option('selectedItem').id, 2, 'selectedItem is correct');
+    });
+
+    QUnit.test('drop-down list selected item is correct with initial value and pre-grouped items', function(assert) {
+        const dropDownList = $('#dropDownList').dxDropDownList({
+            items: this.getGroupedItems(),
+            opened: true,
+            grouped: true,
+            valueExpr: 'id',
+            displayExpr: 'id',
+            value: 2
+        }).dxDropDownList('instance');
+
+        const listSelectedItemKeys = dropDownList._list.option('selectedItemKeys');
+        assert.deepEqual(listSelectedItemKeys, [2]);
+    });
+
+    // TODO: reanimate
+    QUnit.test('drop-down list selected item is correct with initial value and pre-grouped dataSource', function(assert) {
+        const dropDownList = $('#dropDownList').dxDropDownList({
+            dataSource: {
+                store: this.getGroupedItems()
+            },
+            opened: true,
+            grouped: true,
+            valueExpr: 'id',
+            displayExpr: 'id',
+            value: 2
+        }).dxDropDownList('instance');
+
+        const listSelectedItemKeys = dropDownList._list.option('selectedItemKeys');
+        assert.deepEqual(listSelectedItemKeys, [2]);
     });
 });
 

@@ -512,6 +512,8 @@ const DropDownList = DropDownEditor.inherit({
     _listConfig: function() {
         const options = {
             selectionMode: 'single',
+            onSelectionChanged: this._getSelectionChangeHandler(),
+            selectedItem: this.option('selectedItem'),
             _templates: this.option('_templates'),
             templateProvider: this.option('templateProvider'),
             noDataText: this.option('noDataText'),
@@ -534,6 +536,16 @@ const DropDownList = DropDownEditor.inherit({
         }
 
         return options;
+    },
+
+    _getSelectionChangeHandler: function() {
+        return this.option('showSelectionControls') ? this._selectionChangeHandler.bind(this) : commonUtils.noop;
+    },
+
+    _selectionChangeHandler: function(e) {
+        each(e.addedItems || [], (function(_, addedItem) {
+            this._setValue(this._valueGetter(addedItem));
+        }).bind(this));
     },
 
     _canListHaveFocus: () => false,

@@ -87,6 +87,39 @@ QUnit.test('it should be possible to select an item in the grouped list by primi
     assert.deepEqual(list.option('selectedItems'), [{ key: 'first', items: [{ a: 1 }] }], 'selectedItems is correct');
 });
 
+QUnit.test('it should be possible to select an item in the grouped list by primitive index', function(assert) {
+    const items = [
+        {
+            key: 'first',
+            items: [{ a: 0 }, { a: 1 }]
+        },
+        {
+            key: 'second',
+            items: [{ a: 2 }, { a: 3 }]
+        }
+    ];
+
+    const $list = $('#templated-list').dxList({
+        dataSource: items,
+        selectionMode: 'single',
+        keyExpr: 'a',
+        selectedItemKeys: [ 1 ],
+        grouped: true
+    });
+    const list = $list.dxList('instance');
+
+    const $items = $list.find(toSelector(LIST_ITEM_CLASS));
+
+    assert.ok($items.eq(1).hasClass(LIST_ITEM_SELECTED_CLASS), 'correct item is selected');
+    assert.deepEqual(list.option('selectedItem'), { key: 'second', items: [{ a: 2 }] }, 'selectedItem is correct');
+    assert.deepEqual(list.option('selectedItems'), [{ key: 'second', items: [{ a: 2 }] }], 'selectedItems is correct');
+
+    list.option('selectedIndex', 1);
+    assert.ok($items.eq(1).hasClass(LIST_ITEM_SELECTED_CLASS), 'correct item is selected');
+    assert.deepEqual(list.option('selectedItem'), { key: 'first', items: [{ a: 1 }] }, 'selectedItem is correct');
+    assert.deepEqual(list.option('selectedItems'), [{ key: 'first', items: [{ a: 1 }] }], 'selectedItems is correct');
+});
+
 QUnit.test('item should be correct for plain list', function(assert) {
     const items = [{ a: 0 }, { a: 1 }];
 

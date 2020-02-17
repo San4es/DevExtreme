@@ -5176,6 +5176,45 @@ QUnit.module('focus policy', {
     });
 });
 
+QUnit.module('dropdownlist with groups', {
+    beforeEach: function() {
+
+        this.getGroupedItems = () => [{
+            key: 'first',
+            items: [{ id: 1 }]
+        }, {
+            key: 'second',
+            items: [{ id: 2 }]
+        }];
+
+        this.getGroupedDataSource = () => new DataSource({
+            store: [{ id: 1, group: 'first' }, { id: 2, group: 'second' }],
+            key: 'id',
+            group: 'group'
+        });
+    }
+});
+
+QUnit.test('drop-down list selected item is correct with initial value and pre-grouped items', function(assert) {
+    const instance = $('#selectBox').dxSelectBox({
+        items: this.getGroupedItems(),
+        //    opened: true,
+        grouped: true,
+        valueExpr: 'id',
+        displayExpr: 'id',
+        value: 2
+    }).dxSelectBox('instance');
+
+    instance.open();
+
+    // var $secondItem = $(dropDownList.content()).find(".dx-list-item").eq(1);
+    // assert.ok($secondItem.hasClass("dx-list-item-selected"), "selectedItem is correct");
+
+    const list = instance._list;
+    assert.deepEqual(list.option('selectedItemKeys'), [2]);
+});
+
+
 let helper;
 if(devices.real().deviceType === 'desktop') {
     [true, false].forEach((searchEnabled) => {

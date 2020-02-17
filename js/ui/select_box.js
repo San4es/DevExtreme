@@ -5,7 +5,6 @@ const isDefined = typeUtils.isDefined;
 const isPromise = typeUtils.isPromise;
 const extend = require('../core/utils/extend').extend;
 const inArray = require('../core/utils/array').inArray;
-const each = require('../core/utils/iterator').each;
 const deferredUtils = require('../core/utils/deferred');
 const getPublicElement = require('../core/utils/dom').getPublicElement;
 const Deferred = deferredUtils.Deferred;
@@ -389,8 +388,6 @@ const SelectBox = DropDownList.inherit({
     _listConfig: function() {
         const result = extend(this.callBase(), {
             pageLoadMode: 'scrollBottom',
-            onSelectionChanged: this._getSelectionChangeHandler(),
-            selectedItem: this.option('selectedItem'),
             onFocusedItemChanged: this._listFocusedItemChangeHandler.bind(this)
         });
 
@@ -427,14 +424,10 @@ const SelectBox = DropDownList.inherit({
         this._renderField();
     },
 
-    _getSelectionChangeHandler: function() {
-        return this.option('showSelectionControls') ? this._selectionChangeHandler.bind(this) : commonUtils.noop;
-    },
-
     _selectionChangeHandler: function(e) {
-        each(e.addedItems || [], (function(_, addedItem) {
-            this._setValue(this._valueGetter(addedItem));
-        }).bind(this));
+        if(this.option('showSelectionControls')) {
+            this.callBase(e);
+        }
     },
 
     _getActualSearchValue: function() {

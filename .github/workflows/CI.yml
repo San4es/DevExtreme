@@ -6,7 +6,44 @@ jobs:
   test:
     strategy:
       matrix:
-        CONSTEL: [ export, misc, ui, ui.editors, ui.grid, ui.scheduler, viz ]
+        INCLUDE: [
+            Bootstrap Integration,
+            Bundles,
+            DevExpress,
+            DevExpress.angular,
+            DevExpress.animation,
+            DevExpress.aspnet,
+            DevExpress.core,
+            DevExpress.data,
+            DevExpress.exporter,
+            DevExpress.jquery,
+            DevExpress.knockout,
+            DevExpress.localization,
+            DevExpress.serverSide,
+            DevExpress.ui,
+            DevExpress.ui.events,
+            DevExpress.ui.widgets,
+            DevExpress.ui.widgets.dataGrid,
+            DevExpress.ui.widgets.editors,
+            DevExpress.ui.widgets.form,
+            DevExpress.ui.widgets.pivotGrid,
+            DevExpress.ui.widgets.scheduler,
+            DevExpress.ui.widgets.treeList,
+            DevExpress.utils,
+            DevExpress.viz.charts,
+            DevExpress.viz.core,
+            DevExpress.viz.core.series,
+            DevExpress.viz.funnel,
+            DevExpress.viz.gauges,
+            DevExpress.viz.rangeSelector,
+            DevExpress.viz.renderers,
+            DevExpress.viz.sankey,
+            DevExpress.viz.sparklines,
+            DevExpress.viz.treeMap,
+            DevExpress.viz.vectorMap,
+            DevExpress.viz.vectorMap.utils,
+            Memory Leaks
+        ]
 
     runs-on: windows-latest
     timeout-minutes: 60
@@ -35,7 +72,7 @@ jobs:
 
     - name: Run QUnit tests
       env:
-        CONSTEL: ${{ matrix.CONSTEL }}
+        INCLUDE: ${{ matrix.INCLUDE }}
       run: |
         $runner = Start-Process -FilePath dotnet -ArgumentList './testing/runner/bin/runner.dll --single-run' -PassThru -NoNewWindow
         Write-Host "Runner starting"
@@ -56,7 +93,7 @@ jobs:
           exit 1
         }
         Write-Host "Runner started"
-        $url = "$runner_host/run?notimers=true&nojquery=true&constellation=$env:CONSTEL"
+        $url = "$runner_host/run?notimers=true&nojquery=true&include=$env:INCLUDE"
         & "C:\Program Files\Internet Explorer\iexplore.exe" "$url"
         Write-Host "IE started"
         Wait-Process -InputObject $runner

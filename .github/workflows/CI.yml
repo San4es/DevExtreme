@@ -24,6 +24,7 @@ jobs:
             DevExpress.ui.events,
             DevExpress.ui.widgets,
             DevExpress.ui.widgets.dataGrid,
+            DevExpress.ui.widgets.diagram,
             DevExpress.ui.widgets.editors,
             DevExpress.ui.widgets.form,
             DevExpress.ui.widgets.pivotGrid,

@@ -10,6 +10,7 @@ export DOTNET_USE_POLLING_FILE_WATCHER=true
 
 function run_lint {
     npm i eslint eslint-plugin-spellcheck eslint-plugin-qunit stylelint stylelint-config-standard npm-run-all babel-eslint
+    npm ls eslint
     npm run lint
 }
 

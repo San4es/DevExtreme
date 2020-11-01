@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Newtonsoft.Json;
 using Runner.Models;
 using Runner.Tools;
@@ -18,13 +19,15 @@ namespace Runner.Controllers
         static readonly object IO_SYNC = new object();
 
         UIModelHelper _uiModelHelper;
-        IHostingEnvironment _env;
+        IWebHostEnvironment _env;
+        IUrlHelperFactory _urlHelperFactory;
         RunFlags _runFlags;
 
-        public MainController(IHostingEnvironment env, RunFlags runFlags)
+        public MainController(IWebHostEnvironment env, RunFlags runFlags, IUrlHelperFactory urlHelperFactory)
         {
             _env = env;
             _runFlags = runFlags;
+            _urlHelperFactory = urlHelperFactory;
         }
 
         protected UIModelHelper UIModelHelper
@@ -32,7 +35,7 @@ namespace Runner.Controllers
             get
             {
                 if (_uiModelHelper == null)
-                    _uiModelHelper = new UIModelHelper(ActionContext, _env);
+                    _uiModelHelper = new UIModelHelper(ActionContext, _env, _urlHelperFactory);
                 return _uiModelHelper;
             }
         }

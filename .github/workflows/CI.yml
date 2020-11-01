@@ -44,22 +44,9 @@ jobs:
         $runner = Start-Process -FilePath dotnet -ArgumentList './testing/runner/bin/runner.dll --single-run' -PassThru -NoNewWindow
         Write-Host "Runner starting"
         $runner_port = (Get-Content ports.json | ConvertFrom-Json).qunit
-        $runner_host = "http://localhost:$runner_port"
+        $runner_host = "https://localhost:$runner_port"
         $attempt_count = 30
-        For ($i=0; $i -lt $attempt_count; $i++) {
-          try {
-            Invoke-WebRequest $runner_host -Method 'HEAD' -TimeoutSec 5 | Out-Null
-            break
-          }
-          catch {
-            Write-Host "Waiting for runner... Attempt $i"
-            Start-Sleep -s 1
-          }
-        }
-        If ($i -eq $attempt_count) {
-          Write-Host "Runner doesn't respond"
-          exit 1
-        }
+        Start-Sleep -s 10
         Write-Host "Runner started"
         $url = "$runner_host/run?notimers=true&$env:JQUERY&constellation=$env:CONSTEL"
         $browser = $env:BROWSER

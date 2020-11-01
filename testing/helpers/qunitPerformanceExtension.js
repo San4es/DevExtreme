@@ -14,7 +14,7 @@
         that.callbacks = {};
         that.nextCommandId = 1;
 
-        loadJSON('http://localhost:9223/json', function(data) {
+        loadJSON('https://localhost:9223/json', function(data) {
             $.each(data, function(_, item) {
                 const title = $('<div>').html(item.title).text();
                 // TODO: Try to find another way (item.title.indexOf(document.title) !== -1))

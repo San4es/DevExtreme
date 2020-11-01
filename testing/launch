@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const path = require('path');
-const http = require('http');
+const https = require('https');
 const gulp = require('gulp');
 const childProcess = require('child_process');
 const os = require('os');
@@ -36,7 +36,7 @@ function watchForTests() {
 
 function waitForRunner() {
     const timestamp = Date.now();
-    http.request({ port: PORT }, res => openBrowser())
+    https.request({ port: PORT, rejectUnauthorized: false }, res => openBrowser())
         .on('error', e => setTimeout(
             function() {
                 console.log('waiting...');
@@ -50,7 +50,7 @@ function waitForRunner() {
 function openBrowser() {
     childProcess.spawn(
         getBrowserCommand(),
-        [ 'http://localhost:' + PORT ],
+        [ 'https://localhost:' + PORT ],
         {
             shell: true,
             detached: true

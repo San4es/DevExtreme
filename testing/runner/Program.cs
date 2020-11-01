@@ -11,6 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Newtonsoft.Json.Serialization;
 using Runner.Tools;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 
 namespace Runner
 {
@@ -23,7 +25,7 @@ namespace Runner
                 var rootPath = Path.Combine(AppContext.BaseDirectory, "../../..");
                 Ports.Load(Path.Combine(rootPath, "ports.json"));
 
-                var url = "http://0.0.0.0:" + Ports.Get("qunit");
+                var url = "https://0.0.0.0:" + Ports.Get("qunit");
 
                 var builder = new WebHostBuilder()
                     .UseUrls(url)
@@ -32,15 +34,12 @@ namespace Runner
                     .ConfigureServices(services =>
                     {
                         services
-                            .AddMvcCore()
-                            .AddViews()
-                            .AddRazorViewEngine()
-                            .AddJsonFormatters()
-                            .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
+                            .AddControllersWithViews()
+                            .AddNewtonsoftJson(options => {
+                                options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+                            });
 
                         services.AddWebEncoders();
-
-                        services.Configure<RazorViewEngineOptions>(options => options.ViewLocationExpanders.Add(new ViewLocationExpander()));
 
                         services.AddSingleton(new RunFlags
                         {
@@ -50,13 +49,15 @@ namespace Runner
                         });
                     })
                     .Configure(app => app
+                        .UseHttpsRedirection()
                         .UseStatusCodePages()
                         .UseDeveloperExceptionPage()
-                        .UseMvc(routes => routes
-                            .MapRoute("RunSuite", "run/{catName}/{suiteName}", new { controller = "Main", action = "RunSuite" }, new { suiteName = @".*\.js" })
-                            .MapRoute("RunAll", "run", new { controller = "Main", action = "RunAll" })
-                            .MapRoute("default", "{controller=Main}/{action=Index}/{id?}")
-                        )
+                        .UseRouting()
+                        .UseEndpoints(endpoints => {
+                            endpoints.MapControllerRoute("RunSuite", "run/{catName}/{suiteName}", new { controller = "Main", action = "RunSuite" }, new { suiteName = @".*\.js" });
+                            endpoints.MapControllerRoute("RunAll", "run", new { controller = "Main", action = "RunAll" });
+                            endpoints.MapControllerRoute("default", "{controller=Main}/{action=Index}/{id?}");
+                        })
                         .UseFileServer(new FileServerOptions
                         {
                             EnableDirectoryBrowsing = true,

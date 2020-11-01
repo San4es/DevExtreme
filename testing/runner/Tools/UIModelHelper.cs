@@ -16,12 +16,12 @@ namespace Runner.Tools
         // constellation is a set of categories, they are defined in __meta.json files inside category directories
         static readonly ICollection<string> KnownConstellations = new HashSet<string> { "export", "misc", "ui", "ui.widgets", "ui.editors", "ui.grid", "ui.scheduler", "viz", "perf", "renovation" };
 
-        UrlHelper UrlHelper;
+        IUrlHelper UrlHelper;
         string TestsRootPath;
 
-        public UIModelHelper(ActionContext actionContext, IHostingEnvironment env)
+        public UIModelHelper(ActionContext actionContext, IWebHostEnvironment env, IUrlHelperFactory urlHelperFactory)
         {
-            UrlHelper = new UrlHelper(actionContext);
+            UrlHelper = urlHelperFactory.GetUrlHelper(actionContext);
             TestsRootPath = Path.Combine(env.ContentRootPath, "testing/tests");
         }
 
